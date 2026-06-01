@@ -62,34 +62,9 @@ export const searchMovies = async (query: string, page = 1) => {
   return await response.json();
 };
 
-export const createRequestToken = async (): Promise<string> => {
-  const response = await fetch(`${TMDB_BASE_URL}/authentication/token/new`, {
+export const getAccount = async () => {
+  const response = await fetch(`${TMDB_BASE_URL}/account`, {
     headers: authHeaders,
   });
-  const data = await response.json();
-  if (!data.success || !data.request_token) {
-    throw new Error(data.status_message ?? "Failed to create request token");
-  }
-  return data.request_token;
-};
-
-export const createSession = async (requestToken: string): Promise<string> => {
-  const response = await fetch(`${TMDB_BASE_URL}/authentication/session/new`, {
-    method: "POST",
-    headers: { ...authHeaders, "Content-Type": "application/json" },
-    body: JSON.stringify({ request_token: requestToken }),
-  });
-  const data = await response.json();
-  if (!data.success || !data.session_id) {
-    throw new Error(data.status_message ?? "Failed to create session");
-  }
-  return data.session_id;
-};
-
-export const getAccount = async (sessionId: string) => {
-  const response = await fetch(
-    `${TMDB_BASE_URL}/account?session_id=${sessionId}`,
-    { headers: authHeaders },
-  );
   return await response.json();
 };
